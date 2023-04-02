@@ -5,10 +5,13 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/matthewjrogers/rairtable/workflows/R-CMD-check/badge.svg)](https://github.com/matthewjrogers/rairtable/actions)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/rairtable)](https://cran.r-project.org/package=rairtable)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/rairtable)](https://cran.r-project.org/package=rairtable)
 <!-- badges: end --> 
 
 
-`rairtable` is an efficient, Tidyverse-friendly interface to Airtable API intended to simplify the integration of Airtable into data science workflows. Other R packages exist for this purpose, but `rairtable` offers the following advantages:
+`rairtable` is an efficient, Tidyverse-friendly interface to the Airtable API intended to simplify the integration of Airtable into data science workflows. Other R packages exist for this purpose, but `rairtable` offers the following advantages:
 
 - Create, update, and delete Airtable records in batches of up to 10 at a time
 - Optional parallelization of JSON encoding for large tables
@@ -20,14 +23,14 @@
 
 ## __INSTALLATION__
 
-Install using `install.packages('rairtable')`.
+For the stable CRAN release, install using `install.packages('rairtable')`. For the development version of the package, use `remotes::install_giuthub('matthewjrogers/rairtable', ref = 'dev)`
 
 *****
 
 ## __USAGE__
 
 ## Get and set your API key
-Generate an Airtable API key from your [Airtable account](https://airtable.com/account) page and pass the result to `set_airtable_api_key('MY_KEY_HERE')`. If you would like to store the key in your `.Renviron` file for use in the future, set `set_airtable_api_key('MY_KEY_HERE', install = TRUE)`.
+Generate an Airtable API key from your [Airtable account](https://airtable.com/account) page and pass the result to `set_airtable_api_key('MY_KEY_HERE')`. If you would like to store the key in your `.Renviron` file for use in the future, use `set_airtable_api_key('MY_KEY_HERE', install = TRUE)`. This will also work work with Personal Access Tokens
 
 ## Connect to a table
 
@@ -69,7 +72,7 @@ removed_ids <- cars_airtable %>%
   delete_records(table)
 
 cars_airtable %>%
-  filter(!airtable_id %in% removed_ids)
+  filter(!airtable_record_id %in% removed_ids)
 
 ```
 

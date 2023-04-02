@@ -3,6 +3,7 @@
 #' Connect to and read values from an Airtable table.
 #'
 #' @param airtable An airtable object
+#' @param fields An optional list of fields to select.
 #' @param id_to_col If TRUE, store airtable ID as a column rather than as row names
 #' @param max_rows Optional maximum number of rows to read
 #' 
@@ -15,11 +16,11 @@
 #' @importFrom httr content
 #' @importFrom httr stop_for_status
 #' @importFrom jsonlite fromJSON
-#' @importFrom data.table rbindlist
+#' @importFrom dplyr bind_rows
 #' @importFrom tibble column_to_rownames
 #'
 
-read_airtable <- function(airtable, id_to_col = TRUE, max_rows = 50000){
+read_airtable <- function(airtable, fields = NULL, id_to_col = TRUE, max_rows = 50000){
 
   validate_airtable(airtable)
   stopifnot(is.logical(id_to_col))
@@ -35,10 +36,17 @@ read_airtable <- function(airtable, id_to_col = TRUE, max_rows = 50000){
     # add view to query if present
     query_body['view'] <- attr(airtable, 'view')
   }
-
+  
+  url <- attr(airtable, "request_url")
+  
+  if (!is.null(fields)){
+    url_params <- paste0("fields%5B%5D=", fields, collapse = "&")
+    url <- paste(url, url_params, sep = "?")
+  }
+  
   for (idx in 1:length(dta)){
 
-    response <- httr::GET(attr(airtable, "request_url"),
+    response <- httr::GET(url,
                           config = httr::add_headers(
                             Authorization = paste("Bearer", get_airtable_api_key())
                           ),
@@ -65,8 +73,13 @@ read_airtable <- function(airtable, id_to_col = TRUE, max_rows = 50000){
 
   }
 
+  
+  if (any(unlist(lapply(dta[[1]], class)) == "data.frame")){
+    warning("This data may contain 'user' field types. This type is currently unsupported in `insert_records` and `update_records`", call. = FALSE)
+  }
+  
   # collapse list to dataframe
-  table_data <- data.table::rbindlist(dta, use.names = TRUE, fill = TRUE)
+  table_data <- dplyr::bind_rows(dta)
 
   if(!id_to_col){
     # set ids to rownames if not instructed to do otherwise

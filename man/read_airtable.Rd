@@ -4,17 +4,19 @@
 \alias{read_airtable}
 \title{Read table from Airtable}
 \usage{
-read_airtable(airtable, id_to_col = TRUE, max_rows = 50000)
+read_airtable(airtable, fields = NULL, id_to_col = TRUE, max_rows = 50000)
 }
 \arguments{
 \item{airtable}{An airtable object}
+
+\item{fields}{An optional list of fields to select.}
 
 \item{id_to_col}{If TRUE, store airtable ID as a column rather than as row names}
 
 \item{max_rows}{Optional maximum number of rows to read}
 }
 \value{
-A dataframe containing the data read from the 'Airtable' table
+A dataframe containing the data read from the specified 'Airtable' table
 }
 \description{
 Connect to and read values from an Airtable table.
